@@ -1,0 +1,61 @@
+--- ./build/build.c	2011-10-29 13:49:00.000000000 -0400
++++ ../rpm-4.9.1.1.x86/build/build.c	2011-07-15 04:17:57.000000000 -0400
+@@ -55,8 +55,6 @@
+ {
+     const char * rootDir = spec->rootDir;
+     char *scriptName = NULL;
+-static char ctemp[1000];
+-scriptName = ctemp;
+     char * buildDir = rpmGenPath(rootDir, "%{_builddir}", "");
+     char * buildCmd = NULL;
+     char * buildTemplate = NULL;
+@@ -68,7 +66,7 @@
+     const char **argv = NULL;
+     FILE * fp = NULL;
+ 
+-    FD_t fd = NULL;
++    FD_t fd;
+     FD_t xfd;
+     pid_t pid;
+     pid_t child;
+@@ -119,12 +117,7 @@
+ 	goto exit;
+     }
+     
+-#if 0
+     fd = rpmMkTempFile(rootDir, &scriptName);
+-#else
+-    sprintf(scriptName, "%s/%s.%s", rootDir, headerGetString(spec->packages->header, RPMTAG_NAME), (name[0] == '%')? name+1: name);
+-    fd = Fopen(scriptName, "w.fpio");
+-#endif
+     if (fd == NULL || Ferror(fd)) {
+ 	rpmlog(RPMLOG_ERR, _("Unable to open temp file.\n"));
+ 	rc = RPMRC_FAIL;
+@@ -175,9 +168,6 @@
+     (void) poptParseArgvString(buildCmd, &argc, &argv);
+ 
+     rpmlog(RPMLOG_NOTICE, _("Executing(%s): %s\n"), name, buildCmd);
+-#if 1
+-printf("[%s:%d] ZZZZZZZZZZZZZZZZZZZZZZZ dont run execvp!!!!!!!!!!!!!!!!!!!!!!!!!!\n", __FUNCTION__, __LINE__);
+-#else
+     if (!(child = fork())) {
+ 	/* NSPR messes with SIGPIPE, reset to default for the kids */
+ 	signal(SIGPIPE, SIG_DFL);
+@@ -197,17 +187,14 @@
+ 		 scriptName, name);
+ 	rc = RPMRC_FAIL;
+     } else
+-#endif
+ 	rc = RPMRC_OK;
+     
+ exit:
+-#if 0
+     if (scriptName) {
+ 	if (rc == RPMRC_OK)
+ 	    (void) unlink(scriptName);
+ 	scriptName = _free(scriptName);
+     }
+-#endif
+     argv = _free(argv);
+     buildCmd = _free(buildCmd);
+     buildTemplate = _free(buildTemplate);

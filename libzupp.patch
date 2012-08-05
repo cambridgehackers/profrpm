@@ -1,0 +1,49 @@
+diff --git a/CMakeLists.txt b/CMakeLists.txt
+index 8e42ebd..4715618 100644
+--- a/CMakeLists.txt
++++ b/CMakeLists.txt
+@@ -123,12 +123,12 @@ ELSE ( NOT ZLIB_FOUND)
+ ENDIF( NOT ZLIB_FOUND)
+ 
+ #SET(LibSolv_USE_STATIC_LIBS ON)
+-FIND_PACKAGE(LibSolv REQUIRED ext)
+-IF ( NOT LibSolv_FOUND )
+-  MESSAGE( FATAL_ERROR " libsolv not found" )
+-ELSE()
++#jca FIND_PACKAGE(LibSolv REQUIRED ext)
++#jca IF ( NOT LibSolv_FOUND )
++  #jca MESSAGE( FATAL_ERROR " libsolv not found" )
++#jca ELSE()
+   INCLUDE_DIRECTORIES( ${LibSolv_INCLUDE_DIRS} )
+-ENDIF()
++#jca ENDIF()
+ 
+ # libsolv uses expat and has open references to it:
+ FIND_PACKAGE(EXPAT REQUIRED)
+diff --git a/cmake/modules/FindRpm.cmake b/cmake/modules/FindRpm.cmake
+index 29696e3..b4aa5c2 100644
+--- a/cmake/modules/FindRpm.cmake
++++ b/cmake/modules/FindRpm.cmake
+@@ -10,6 +10,7 @@ set(RPM_INCLUDE_DIR)
+ FIND_PATH(RPM_INCLUDE_DIR rpm/rpmdb.h
+ 	/usr/include
+ 	/usr/local/include
++	/opt/profbuild/include
+ )
+ 
+ set(RPM_SUSPECT_VERSION "RPM_SUSPECT_VERSION-NOTFOUND" )
+@@ -38,6 +39,7 @@ FIND_LIBRARY(RPM_LIBRARY NAMES rpm
+ 	PATHS
+ 	/usr/lib
+ 	/usr/local/lib
++	/opt/profbuild/lib
+ )
+ 
+ if(RPM_INCLUDE_DIR AND RPM_LIBRARY)
+@@ -47,4 +49,4 @@ else(RPM_INCLUDE_DIR AND RPM_LIBRARY)
+    MESSAGE( STATUS "rpm not found")
+ endif(RPM_INCLUDE_DIR AND RPM_LIBRARY)
+ 
+-MARK_AS_ADVANCED(RPM_INCLUDE_DIR RPM_LIBRARY)
+\ No newline at end of file
++MARK_AS_ADVANCED(RPM_INCLUDE_DIR RPM_LIBRARY)

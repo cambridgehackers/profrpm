@@ -1,0 +1,18 @@
+--- ../rpm-4.9.1.1.orig/rpmbuild.c	2011-07-15 04:17:57.000000000 -0400
++++ ./rpmbuild.c	2011-11-09 22:22:39.000000000 -0500
+@@ -616,13 +616,13 @@
+ 	}
+ 
+ 	while ((pkg = poptGetArg(optCon))) {
++	    rpmFreeMacros(NULL);
++	    (void) rpmReadConfigFiles(rpmcliRcfile, NULL);
+ 	    ba->rootdir = rpmcliRootDir;
+ 	    ba->cookie = NULL;
+ 	    ec = build(ts, pkg, ba, rpmcliRcfile);
+ 	    if (ec)
+ 		break;
+-	    rpmFreeMacros(NULL);
+-	    (void) rpmReadConfigFiles(rpmcliRcfile, NULL);
+ 	}
+ 	break;
+     }
