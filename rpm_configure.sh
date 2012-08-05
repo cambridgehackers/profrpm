@@ -1,7 +1,5 @@
 #/bin/bash
 
-#ln -s ../db-4.5.20 db
-
 #SSLDFLAGS="-L/usr/lib/nss /usr/lib/liblzma.so.2" 
 #LDFLAGS="-L/usr/lib/nss " \
 
