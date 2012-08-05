@@ -1,4 +1,3 @@
-
 #
 cd test
 tar xzf db-4.5.20.tar.gz

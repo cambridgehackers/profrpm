@@ -1,0 +1,21 @@
+
+These scripts are used to build a version of rpm + zypper that can allows use without sudo priveleges.
+A new command line option is added to rpm, '--nochroot', which prepends the '--root' path to all file operations.
+Zypper has also been modified to use '--nochroot' and '--noscripts' when invoking rpm.
+
+So that these utilities will not interfere with ones already installed, a program prefix of 'prof-' is used
+and they are installed in /opt/profbuild.  In addition, they are built with static libraries, to make them
+easier to copy into other locations.
+
+To get host packages needed to build either rpm or zypper:
+    packages_fedora.sh
+
+To get the rpm and zypper sources:
+    getsource.sh
+(Verified 4 Aug 2012)
+
+To apply patches:
+    prepare.sh
+
+To compile/install in /opt/profbuild:
+    build.sh

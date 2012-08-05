@@ -1,26 +1,21 @@
-diff '--exclude=.git' -aur ../test/libsolv/CMakeLists.txt ./libsolv/CMakeLists.txt
---- ../test/libsolv/CMakeLists.txt	2012-08-05 00:09:08.852993795 -0400
-+++ ./libsolv/CMakeLists.txt	2012-08-04 23:23:46.919032521 -0400
-@@ -75,9 +75,14 @@
+diff '--exclude=.git' -aur ./libsolv/CMakeLists.txt ../test.003/libsolv/CMakeLists.txt
+--- ./libsolv/CMakeLists.txt	2012-08-05 07:44:58.622622141 -0400
++++ ../test.003/libsolv/CMakeLists.txt	2012-08-05 07:47:50.339620967 -0400
+@@ -75,9 +75,9 @@
  FIND_LIBRARY (RPMDB_LIBRARY NAMES rpm)
  ENDIF (NOT RPMDB_LIBRARY)
  
 -FIND_LIBRARY (RPMIO_LIBRARY NAMES rpmio)
-+FIND_LIBRARY (RPMIO_LIBRARY NAMES rpmio
-+	PATHS
-+	/usr/lib
-+	/usr/local/lib
-+	/opt/profbuild/lib
-+)
++FIND_LIBRARY (RPMIO_LIBRARY NAMES rpmio PATHS /opt/profbuild/lib)
  IF (RPMIO_LIBRARY)
 -SET(RPMDB_LIBRARY ${RPMIO_LIBRARY} ${RPMDB_LIBRARY})
-+SET(RPMDB_LIBRARY ${RPMDB_LIBRARY} ${RPMIO_LIBRARY} lzma popt dl pthread nss3 bz2)
++SET(RPMDB_LIBRARY ${RPMIO_LIBRARY} ${RPMDB_LIBRARY} lzma popt dl pthread nss3 bz2)
  ENDIF (RPMIO_LIBRARY)
  
  IF (RPM5)
-diff '--exclude=.git' -aur ../test/libzypp/cmake/modules/FindRpm.cmake ./libzypp/cmake/modules/FindRpm.cmake
---- ../test/libzypp/cmake/modules/FindRpm.cmake	2012-08-05 00:09:36.094993426 -0400
-+++ ./libzypp/cmake/modules/FindRpm.cmake	2012-08-04 22:05:11.031094868 -0400
+diff '--exclude=.git' -aur ./libzypp/cmake/modules/FindRpm.cmake ../test.003/libzypp/cmake/modules/FindRpm.cmake
+--- ./libzypp/cmake/modules/FindRpm.cmake	2012-08-05 07:45:28.116621739 -0400
++++ ../test.003/libzypp/cmake/modules/FindRpm.cmake	2012-08-05 07:49:05.910616194 -0400
 @@ -5,11 +5,13 @@
  endif(RPM_INCLUDE_DIR AND RPM_LIBRARY)
  
@@ -35,30 +30,26 @@ diff '--exclude=.git' -aur ../test/libzypp/cmake/modules/FindRpm.cmake ./libzypp
  )
  
  set(RPM_SUSPECT_VERSION "RPM_SUSPECT_VERSION-NOTFOUND" )
-@@ -38,6 +40,13 @@
+@@ -38,7 +40,9 @@
  	PATHS
  	/usr/lib
  	/usr/local/lib
 +	/opt/profbuild/lib
-+)
-+FIND_LIBRARY(RPMIO_LIBRARY NAMES rpmio
-+	PATHS
-+	/usr/lib
-+	/usr/local/lib
-+	/opt/profbuild/lib
  )
++FIND_LIBRARY(RPMIO_LIBRARY NAMES rpmio PATHS /opt/profbuild/lib)
  
  if(RPM_INCLUDE_DIR AND RPM_LIBRARY)
-@@ -47,4 +56,4 @@
+    MESSAGE( STATUS "rpm found: includes in ${RPM_INCLUDE_DIR}, library in ${RPM_LIBRARY} (suspect ${RPM_SUSPECT_VERSION})")
+@@ -47,4 +51,4 @@
     MESSAGE( STATUS "rpm not found")
  endif(RPM_INCLUDE_DIR AND RPM_LIBRARY)
  
 -MARK_AS_ADVANCED(RPM_INCLUDE_DIR RPM_LIBRARY)
 \ No newline at end of file
 +MARK_AS_ADVANCED(RPM_INCLUDE_DIR RPM_LIBRARY RPMIO_LIBRARY)
-diff '--exclude=.git' -aur ../test/libzypp/CMakeLists.txt ./libzypp/CMakeLists.txt
---- ../test/libzypp/CMakeLists.txt	2012-08-05 00:09:36.629993418 -0400
-+++ ./libzypp/CMakeLists.txt	2012-08-04 23:59:42.729002411 -0400
+diff '--exclude=.git' -aur ./libzypp/CMakeLists.txt ../test.003/libzypp/CMakeLists.txt
+--- ./libzypp/CMakeLists.txt	2012-08-05 07:45:28.292621738 -0400
++++ ../test.003/libzypp/CMakeLists.txt	2012-08-05 00:17:10.305987252 -0400
 @@ -122,13 +122,13 @@
    INCLUDE_DIRECTORIES(${ZLIB_INCLUDE_DIR})
  ENDIF( NOT ZLIB_FOUND)
@@ -79,9 +70,9 @@ diff '--exclude=.git' -aur ../test/libzypp/CMakeLists.txt ./libzypp/CMakeLists.t
  
  # libsolv uses expat and has open references to it:
  FIND_PACKAGE(EXPAT REQUIRED)
-diff '--exclude=.git' -aur ../test/libzypp/zypp/CMakeLists.txt ./libzypp/zypp/CMakeLists.txt
---- ../test/libzypp/zypp/CMakeLists.txt	2012-08-05 00:09:36.638993418 -0400
-+++ ./libzypp/zypp/CMakeLists.txt	2012-08-05 00:02:01.412000400 -0400
+diff '--exclude=.git' -aur ./libzypp/zypp/CMakeLists.txt ../test.003/libzypp/zypp/CMakeLists.txt
+--- ./libzypp/zypp/CMakeLists.txt	2012-08-05 07:45:28.301621738 -0400
++++ ../test.003/libzypp/zypp/CMakeLists.txt	2012-08-05 00:17:10.306987252 -0400
 @@ -915,14 +915,14 @@
  #SET_LOGGROUP( "group" ${zypp_pool_SRCS} )
  
@@ -109,9 +100,9 @@ diff '--exclude=.git' -aur ../test/libzypp/zypp/CMakeLists.txt ./libzypp/zypp/CM
  
  # install XML schemas
  FILE( GLOB YUM_SCHEMA_FILES ${LIBZYPP_SOURCE_DIR}/zypp/parser/yum/schema/*.rng )
-diff '--exclude=.git' -aur ../test/libzypp/zypp/target/rpm/RpmDb.cc ./libzypp/zypp/target/rpm/RpmDb.cc
---- ../test/libzypp/zypp/target/rpm/RpmDb.cc	2012-08-05 00:09:36.655993418 -0400
-+++ ./libzypp/zypp/target/rpm/RpmDb.cc	2012-08-04 22:05:11.042094868 -0400
+diff '--exclude=.git' -aur ./libzypp/zypp/target/rpm/RpmDb.cc ../test.003/libzypp/zypp/target/rpm/RpmDb.cc
+--- ./libzypp/zypp/target/rpm/RpmDb.cc	2012-08-05 07:45:28.318621738 -0400
++++ ../test.003/libzypp/zypp/target/rpm/RpmDb.cc	2012-08-05 00:17:10.307987252 -0400
 @@ -1444,7 +1444,9 @@
    RpmArgVec args;
  
@@ -123,9 +114,9 @@ diff '--exclude=.git' -aur ../test/libzypp/zypp/target/rpm/RpmDb.cc ./libzypp/zy
    args.push_back("--root");
    args.push_back(_root.asString().c_str());
    args.push_back("--dbpath");
-diff '--exclude=.git' -aur ../test/zypper/CMakeLists.txt ./zypper/CMakeLists.txt
---- ../test/zypper/CMakeLists.txt	2012-08-05 00:09:55.705993159 -0400
-+++ ./zypper/CMakeLists.txt	2012-08-05 00:05:43.486015663 -0400
+diff '--exclude=.git' -aur ./zypper/CMakeLists.txt ../test.003/zypper/CMakeLists.txt
+--- ./zypper/CMakeLists.txt	2012-08-05 07:45:48.498621463 -0400
++++ ../test.003/zypper/CMakeLists.txt	2012-08-05 00:17:10.307987252 -0400
 @@ -6,6 +6,7 @@
  SET( CMAKE_MODULE_PATH
    ${ZYPP_PREFIX}/share/cmake/Modules
@@ -162,9 +153,9 @@ diff '--exclude=.git' -aur ../test/zypper/CMakeLists.txt ./zypper/CMakeLists.txt
  
  INCLUDE(CTest)
  ENABLE_TESTING()
-diff '--exclude=.git' -aur ../test/zypper/src/CMakeLists.txt ./zypper/src/CMakeLists.txt
---- ../test/zypper/src/CMakeLists.txt	2012-08-05 00:09:55.711993159 -0400
-+++ ./zypper/src/CMakeLists.txt	2012-08-04 22:05:11.043094868 -0400
+diff '--exclude=.git' -aur ./zypper/src/CMakeLists.txt ../test.003/zypper/src/CMakeLists.txt
+--- ./zypper/src/CMakeLists.txt	2012-08-05 07:45:48.503621461 -0400
++++ ../test.003/zypper/src/CMakeLists.txt	2012-08-05 00:17:10.308987252 -0400
 @@ -91,6 +91,7 @@
    ${zypper_utils_HEADERS}
  )
@@ -173,9 +164,9 @@ diff '--exclude=.git' -aur ../test/zypper/src/CMakeLists.txt ./zypper/src/CMakeL
  ADD_LIBRARY( zypper_lib ${zypper_SRCS} ${zypper_out_SRCS} ${zypper_utils_SRCS} )
  TARGET_LINK_LIBRARIES( zypper_lib ${ZYPP_LIBRARY} ${READLINE_LIBRARY} -laugeas ${AUGEAS_LIBRARY} )
  
-diff '--exclude=.git' -aur ../test/zypper/zypper.conf ./zypper/zypper.conf
---- ../test/zypper/zypper.conf	2012-08-05 00:09:55.663993159 -0400
-+++ ./zypper/zypper.conf	2012-08-04 22:05:11.043094868 -0400
+diff '--exclude=.git' -aur ./zypper/zypper.conf ../test.003/zypper/zypper.conf
+--- ./zypper/zypper.conf	2012-08-05 07:45:48.455621464 -0400
++++ ../test.003/zypper/zypper.conf	2012-08-05 00:17:10.308987252 -0400
 @@ -65,7 +65,7 @@
  ## Valid values: boolean
  ## Default value: yes
