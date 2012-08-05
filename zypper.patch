@@ -1,180 +1,187 @@
-diff -aur '--exclude=.git' -r ../../../rpm/libsolv/CMakeLists.txt ./libsolv/CMakeLists.txt
---- ../../../rpm/libsolv/CMakeLists.txt	2012-06-22 18:21:10.594143770 -0400
-+++ ./libsolv/CMakeLists.txt	2012-08-04 21:17:47.366133510 -0400
-@@ -75,14 +75,9 @@
+diff '--exclude=.git' -aur ../test/libsolv/CMakeLists.txt ./libsolv/CMakeLists.txt
+--- ../test/libsolv/CMakeLists.txt	2012-08-05 00:09:08.852993795 -0400
++++ ./libsolv/CMakeLists.txt	2012-08-04 23:23:46.919032521 -0400
+@@ -75,9 +75,14 @@
  FIND_LIBRARY (RPMDB_LIBRARY NAMES rpm)
  ENDIF (NOT RPMDB_LIBRARY)
  
--FIND_LIBRARY (RPMIO_LIBRARY NAMES rpmio
--	PATHS
--	/usr/lib
--	/usr/local/lib
--	/opt/profbuild/lib
--)
-+FIND_LIBRARY (RPMIO_LIBRARY NAMES rpmio)
+-FIND_LIBRARY (RPMIO_LIBRARY NAMES rpmio)
++FIND_LIBRARY (RPMIO_LIBRARY NAMES rpmio
++	PATHS
++	/usr/lib
++	/usr/local/lib
++	/opt/profbuild/lib
++)
  IF (RPMIO_LIBRARY)
--SET(RPMDB_LIBRARY ${RPMDB_LIBRARY} ${RPMIO_LIBRARY} lzma popt dl pthread nss3)
-+SET(RPMDB_LIBRARY ${RPMIO_LIBRARY} ${RPMDB_LIBRARY})
+-SET(RPMDB_LIBRARY ${RPMIO_LIBRARY} ${RPMDB_LIBRARY})
++SET(RPMDB_LIBRARY ${RPMDB_LIBRARY} ${RPMIO_LIBRARY} lzma popt dl pthread nss3 bz2)
  ENDIF (RPMIO_LIBRARY)
  
  IF (RPM5)
-diff -aur '--exclude=.git' -r ../../../rpm/libzypp/cmake/modules/FindRpm.cmake ./libzypp/cmake/modules/FindRpm.cmake
---- ../../../rpm/libzypp/cmake/modules/FindRpm.cmake	2012-06-24 21:57:39.916620956 -0400
-+++ ./libzypp/cmake/modules/FindRpm.cmake	2012-08-04 21:50:34.566107369 -0400
-@@ -5,13 +5,11 @@
+diff '--exclude=.git' -aur ../test/libzypp/cmake/modules/FindRpm.cmake ./libzypp/cmake/modules/FindRpm.cmake
+--- ../test/libzypp/cmake/modules/FindRpm.cmake	2012-08-05 00:09:36.094993426 -0400
++++ ./libzypp/cmake/modules/FindRpm.cmake	2012-08-04 22:05:11.031094868 -0400
+@@ -5,11 +5,13 @@
  endif(RPM_INCLUDE_DIR AND RPM_LIBRARY)
  
  set(RPM_LIBRARY)
--set(RPMIO_LIBRARY)
++set(RPMIO_LIBRARY)
  set(RPM_INCLUDE_DIR)
  
  FIND_PATH(RPM_INCLUDE_DIR rpm/rpmdb.h
  	/usr/include
  	/usr/local/include
--	/opt/profbuild/include
++	/opt/profbuild/include
  )
  
  set(RPM_SUSPECT_VERSION "RPM_SUSPECT_VERSION-NOTFOUND" )
-@@ -40,13 +38,6 @@
+@@ -38,6 +40,13 @@
  	PATHS
  	/usr/lib
  	/usr/local/lib
--	/opt/profbuild/lib
--)
--FIND_LIBRARY(RPMIO_LIBRARY NAMES rpmio
--	PATHS
--	/usr/lib
--	/usr/local/lib
--	/opt/profbuild/lib
++	/opt/profbuild/lib
++)
++FIND_LIBRARY(RPMIO_LIBRARY NAMES rpmio
++	PATHS
++	/usr/lib
++	/usr/local/lib
++	/opt/profbuild/lib
  )
  
  if(RPM_INCLUDE_DIR AND RPM_LIBRARY)
-@@ -56,4 +47,4 @@
+@@ -47,4 +56,4 @@
     MESSAGE( STATUS "rpm not found")
  endif(RPM_INCLUDE_DIR AND RPM_LIBRARY)
  
--MARK_AS_ADVANCED(RPM_INCLUDE_DIR RPM_LIBRARY RPMIO_LIBRARY)
-+MARK_AS_ADVANCED(RPM_INCLUDE_DIR RPM_LIBRARY)
+-MARK_AS_ADVANCED(RPM_INCLUDE_DIR RPM_LIBRARY)
 \ No newline at end of file
-diff -aur '--exclude=.git' -r ../../../rpm/libzypp/CMakeLists.txt ./libzypp/CMakeLists.txt
---- ../../../rpm/libzypp/CMakeLists.txt	2012-06-22 18:05:05.406158257 -0400
-+++ ./libzypp/CMakeLists.txt	2012-08-04 21:50:45.713106627 -0400
++MARK_AS_ADVANCED(RPM_INCLUDE_DIR RPM_LIBRARY RPMIO_LIBRARY)
+diff '--exclude=.git' -aur ../test/libzypp/CMakeLists.txt ./libzypp/CMakeLists.txt
+--- ../test/libzypp/CMakeLists.txt	2012-08-05 00:09:36.629993418 -0400
++++ ./libzypp/CMakeLists.txt	2012-08-04 23:59:42.729002411 -0400
 @@ -122,13 +122,13 @@
    INCLUDE_DIRECTORIES(${ZLIB_INCLUDE_DIR})
  ENDIF( NOT ZLIB_FOUND)
  
--SET(LibSolv_USE_STATIC_LIBS ON)
--#jca FIND_PACKAGE(LibSolv REQUIRED ext)
--#jca IF ( NOT LibSolv_FOUND )
--  #jca MESSAGE( FATAL_ERROR " libsolv not found" )
--#jca ELSE()
-+#SET(LibSolv_USE_STATIC_LIBS ON)
-+FIND_PACKAGE(LibSolv REQUIRED ext)
-+IF ( NOT LibSolv_FOUND )
-+  MESSAGE( FATAL_ERROR " libsolv not found" )
-+ELSE()
+-#SET(LibSolv_USE_STATIC_LIBS ON)
+-FIND_PACKAGE(LibSolv REQUIRED ext)
+-IF ( NOT LibSolv_FOUND )
+-  MESSAGE( FATAL_ERROR " libsolv not found" )
+-ELSE()
++SET(LibSolv_USE_STATIC_LIBS ON)
++#jca FIND_PACKAGE(LibSolv REQUIRED ext)
++#jca IF ( NOT LibSolv_FOUND )
++  #jca MESSAGE( FATAL_ERROR " libsolv not found" )
++#jca ELSE()
    INCLUDE_DIRECTORIES( ${LibSolv_INCLUDE_DIRS} )
--#jca ENDIF()
-+ENDIF()
+-ENDIF()
++#jca ENDIF()
  
  # libsolv uses expat and has open references to it:
  FIND_PACKAGE(EXPAT REQUIRED)
-diff -aur '--exclude=.git' -r ../../../rpm/libzypp/zypp/CMakeLists.txt ./libzypp/zypp/CMakeLists.txt
---- ../../../rpm/libzypp/zypp/CMakeLists.txt	2012-06-24 21:56:13.324622132 -0400
-+++ ./libzypp/zypp/CMakeLists.txt	2012-08-04 21:50:45.722106627 -0400
-@@ -915,15 +915,14 @@
+diff '--exclude=.git' -aur ../test/libzypp/zypp/CMakeLists.txt ./libzypp/zypp/CMakeLists.txt
+--- ../test/libzypp/zypp/CMakeLists.txt	2012-08-05 00:09:36.638993418 -0400
++++ ./libzypp/zypp/CMakeLists.txt	2012-08-05 00:02:01.412000400 -0400
+@@ -915,14 +915,14 @@
  #SET_LOGGROUP( "group" ${zypp_pool_SRCS} )
  
  
--ADD_LIBRARY(zypp STATIC ${zypp_lib_SRCS})
-+ADD_LIBRARY(zypp SHARED ${zypp_lib_SRCS})
+-ADD_LIBRARY(zypp SHARED ${zypp_lib_SRCS})
++ADD_LIBRARY(zypp STATIC ${zypp_lib_SRCS})
  SET_TARGET_PROPERTIES( zypp PROPERTIES VERSION "${LIBZYPP_VERSION_INFO}" )
  SET_TARGET_PROPERTIES( zypp PROPERTIES SOVERSION "${LIBZYPP_SOVERSION_INFO}" )
  ADD_DEPENDENCIES(zypp schema_header)
  # System libraries
  SET(UTIL_LIBRARY util)
  TARGET_LINK_LIBRARIES(zypp ${UTIL_LIBRARY} )
--#TARGET_LINK_LIBRARIES(zypp ${RPM_LIBRARY} ${RPMIO_LIBRARY} ${LZMA_LIBRARY} ${POPT_LIBRARY} ${PTHREAD_LIBRARY} )
--TARGET_LINK_LIBRARIES(zypp ${RPM_LIBRARY} ${RPMIO_LIBRARY} lzma popt pthread bz2 )
-+TARGET_LINK_LIBRARIES(zypp ${RPM_LIBRARY} )
+-TARGET_LINK_LIBRARIES(zypp ${RPM_LIBRARY} )
++TARGET_LINK_LIBRARIES(zypp ${RPM_LIBRARY} ${RPMIO_LIBRARY} lzma popt pthread nss3 bz2 dl /opt/profbuild/lib64/libsolv.a /opt/profbuild/lib64/libsolvext.a )
  TARGET_LINK_LIBRARIES(zypp ${GETTEXT_LIBRARIES} )
  TARGET_LINK_LIBRARIES(zypp ${CURL_LIBRARY} )
  TARGET_LINK_LIBRARIES(zypp ${LIBXML_LIBRARY} )
-@@ -943,8 +942,7 @@
+@@ -942,7 +942,8 @@
  
  TARGET_LINK_LIBRARIES(zypp ${LIBPROXY_LIBRARIES} )
  
--#INSTALL(TARGETS zypp LIBRARY DESTINATION ${LIB_INSTALL_DIR} )
--INSTALL(TARGETS zypp DESTINATION ${LIB_INSTALL_DIR} )
-+INSTALL(TARGETS zypp LIBRARY DESTINATION ${LIB_INSTALL_DIR} )
+-INSTALL(TARGETS zypp LIBRARY DESTINATION ${LIB_INSTALL_DIR} )
++#INSTALL(TARGETS zypp LIBRARY DESTINATION ${LIB_INSTALL_DIR} )
++INSTALL(TARGETS zypp DESTINATION ${LIB_INSTALL_DIR} )
  
  # install XML schemas
  FILE( GLOB YUM_SCHEMA_FILES ${LIBZYPP_SOURCE_DIR}/zypp/parser/yum/schema/*.rng )
-diff -aur '--exclude=.git' -r ../../../rpm/libzypp/zypp/target/rpm/RpmDb.cc ./libzypp/zypp/target/rpm/RpmDb.cc
---- ../../../rpm/libzypp/zypp/target/rpm/RpmDb.cc	2012-06-23 11:01:34.687329707 -0400
-+++ ./libzypp/zypp/target/rpm/RpmDb.cc	2012-08-04 21:50:45.741106627 -0400
-@@ -1444,9 +1444,7 @@
+diff '--exclude=.git' -aur ../test/libzypp/zypp/target/rpm/RpmDb.cc ./libzypp/zypp/target/rpm/RpmDb.cc
+--- ../test/libzypp/zypp/target/rpm/RpmDb.cc	2012-08-05 00:09:36.655993418 -0400
++++ ./libzypp/zypp/target/rpm/RpmDb.cc	2012-08-04 22:05:11.042094868 -0400
+@@ -1444,7 +1444,9 @@
    RpmArgVec args;
  
    // always set root and dbpath
--  args.push_back("prof-rpm");
--  args.push_back("--nochroot");
--  args.push_back("--noscripts");
-+  args.push_back("rpm");
+-  args.push_back("rpm");
++  args.push_back("prof-rpm");
++  args.push_back("--nochroot");
++  args.push_back("--noscripts");
    args.push_back("--root");
    args.push_back(_root.asString().c_str());
    args.push_back("--dbpath");
-diff -aur '--exclude=.git' -r ../../../rpm/zypper/CMakeLists.txt ./zypper/CMakeLists.txt
---- ../../../rpm/zypper/CMakeLists.txt	2012-06-22 19:23:38.306103478 -0400
-+++ ./zypper/CMakeLists.txt	2012-08-04 21:19:02.797132485 -0400
-@@ -16,8 +16,8 @@
+diff '--exclude=.git' -aur ../test/zypper/CMakeLists.txt ./zypper/CMakeLists.txt
+--- ../test/zypper/CMakeLists.txt	2012-08-05 00:09:55.705993159 -0400
++++ ./zypper/CMakeLists.txt	2012-08-05 00:05:43.486015663 -0400
+@@ -6,6 +6,7 @@
+ SET( CMAKE_MODULE_PATH
+   ${ZYPP_PREFIX}/share/cmake/Modules
+   ${ZYPPER_SOURCE_DIR}/cmake/modules
++  /opt/profbuild/share/cmake/Modules
+   ${CMAKE_MODULE_PATH}
+ )
+ INCLUDE(ZyppCommon)
+@@ -16,8 +17,8 @@
  ADD_DEFINITIONS( -D_FILE_OFFSET_BITS=64 )
  ADD_DEFINITIONS( -DVERSION="${VERSION}" )
  
--SET( CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -g -O2 -Wall -Woverloaded-virtual -Wnon-virtual-dtor -fstack-protector -std=c++0x -I/usr/include/libxml2" )
--SET( CMAKE_C_FLAGS   "${CMAKE_C_FLAGS}   -g -O2 -Wall -fstack-protector -I/usr/include/libxml2" )
-+SET( CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -g -O2 -Wall -Woverloaded-virtual -Wnon-virtual-dtor -fstack-protector -std=c++0x" )
-+SET( CMAKE_C_FLAGS   "${CMAKE_C_FLAGS}   -g -O2 -Wall -fstack-protector" )
+-SET( CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -g -O2 -Wall -Woverloaded-virtual -Wnon-virtual-dtor -fstack-protector -std=c++0x" )
+-SET( CMAKE_C_FLAGS   "${CMAKE_C_FLAGS}   -g -O2 -Wall -fstack-protector" )
++SET( CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -g -O2 -Wall -Woverloaded-virtual -Wnon-virtual-dtor -fstack-protector -std=c++0x -I/usr/include/libxml2" )
++SET( CMAKE_C_FLAGS   "${CMAKE_C_FLAGS}   -g -O2 -Wall -fstack-protector -I/usr/include/libxml2" )
  
  GENERATE_PACKAGING(${PACKAGE} ${VERSION})
  
-@@ -53,7 +53,7 @@
+@@ -53,7 +54,7 @@
    FOREACH( loop_var ${ARGV} )
      SET_SOURCE_FILES_PROPERTIES( ${loop_var}_test.cc COMPILE_FLAGS "-DBOOST_TEST_DYN_LINK -DBOOST_TEST_MAIN -DBOOST_AUTO_TEST_MAIN=\"\" " )
      ADD_EXECUTABLE( ${loop_var}_test ${loop_var}_test.cc )
--    TARGET_LINK_LIBRARIES( ${loop_var}_test ${ZYPP_LIBRARY} rpm boost_unit_test_framework zypper_lib zypper_test_utils)
-+    TARGET_LINK_LIBRARIES( ${loop_var}_test ${ZYPP_LIBRARY} boost_unit_test_framework zypper_lib zypper_test_utils)
+-    TARGET_LINK_LIBRARIES( ${loop_var}_test ${ZYPP_LIBRARY} boost_unit_test_framework zypper_lib zypper_test_utils)
++    TARGET_LINK_LIBRARIES( ${loop_var}_test ${ZYPP_LIBRARY} rpm boost_unit_test_framework zypper_lib zypper_test_utils)
      ADD_TEST( ${loop_var}_test ${CMAKE_CURRENT_BINARY_DIR}/${loop_var}_test --catch_system_errors=no)
    ENDFOREACH( loop_var )
  ENDMACRO(ADD_TESTS)
-@@ -62,7 +62,6 @@
+@@ -62,6 +63,7 @@
  ADD_SUBDIRECTORY( po )
  ADD_SUBDIRECTORY( doc )
  ADD_SUBDIRECTORY( tests EXCLUDE_FROM_ALL )
--SET( ZYPP_LIBRARY ${ZYPP_LIBRARY} /opt/profbuild/lib64/libsolv.a openssh )
++SET( ZYPP_LIBRARY ${ZYPP_LIBRARY} /opt/profbuild/lib64/libsolv.a openssh )
  
  INCLUDE(CTest)
  ENABLE_TESTING()
-diff -aur '--exclude=.git' -r ../../../rpm/zypper/src/CMakeLists.txt ./zypper/src/CMakeLists.txt
---- ../../../rpm/zypper/src/CMakeLists.txt	2012-06-24 21:59:35.998619496 -0400
-+++ ./zypper/src/CMakeLists.txt	2012-08-04 21:19:02.803132485 -0400
-@@ -91,7 +91,6 @@
+diff '--exclude=.git' -aur ../test/zypper/src/CMakeLists.txt ./zypper/src/CMakeLists.txt
+--- ../test/zypper/src/CMakeLists.txt	2012-08-05 00:09:55.711993159 -0400
++++ ./zypper/src/CMakeLists.txt	2012-08-04 22:05:11.043094868 -0400
+@@ -91,6 +91,7 @@
    ${zypper_utils_HEADERS}
  )
  
--SET( ZYPP_LIBRARY ${ZYPP_LIBRARY} /opt/profbuild/lib64/libsolv.a /opt/profbuild/lib64/libsolvext.a expat curl /opt/profbuild/lib/librpm.a /opt/profbuild/lib/librpmio.a nss3 dl crypto lzma popt pthread xml2 util bz2 z )
++SET( ZYPP_LIBRARY ${ZYPP_LIBRARY} /opt/profbuild/lib64/libsolv.a /opt/profbuild/lib64/libsolvext.a expat curl /opt/profbuild/lib/librpm.a /opt/profbuild/lib/librpmio.a nss3 dl crypto lzma popt pthread xml2 util bz2 z )
  ADD_LIBRARY( zypper_lib ${zypper_SRCS} ${zypper_out_SRCS} ${zypper_utils_SRCS} )
  TARGET_LINK_LIBRARIES( zypper_lib ${ZYPP_LIBRARY} ${READLINE_LIBRARY} -laugeas ${AUGEAS_LIBRARY} )
  
-diff -aur '--exclude=.git' -r ../../../rpm/zypper/zypper.conf ./zypper/zypper.conf
---- ../../../rpm/zypper/zypper.conf	2012-06-21 15:27:18.237461541 -0400
-+++ ./zypper/zypper.conf	2012-08-04 21:19:02.756132486 -0400
+diff '--exclude=.git' -aur ../test/zypper/zypper.conf ./zypper/zypper.conf
+--- ../test/zypper/zypper.conf	2012-08-05 00:09:55.663993159 -0400
++++ ./zypper/zypper.conf	2012-08-04 22:05:11.043094868 -0400
 @@ -65,7 +65,7 @@
  ## Valid values: boolean
  ## Default value: yes
  ##
--installRecommends = no
-+# installRecommends = yes
+-# installRecommends = yes
++installRecommends = no
  
  ## Commands in which to force resolution.
  ##
