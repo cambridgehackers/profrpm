@@ -7,7 +7,7 @@ make
 sudo make install
 sudo cp db.h /opt/profbuild/include/rpm/
 
-if [ "$GCC_VERSION" >= "4.6.0" ] ; then
+if [ "$GCC_VERSION" > "4.6.0" ] ; then
     cd ../libsolv
     ../../zmake.sh
 else
