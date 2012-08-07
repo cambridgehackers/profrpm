@@ -1,0 +1,32 @@
+diff --git a/CMakeLists.txt b/CMakeLists.txt
+index a65dcb0..e70c3b8 100644
+--- a/CMakeLists.txt
++++ b/CMakeLists.txt
+@@ -66,9 +66,9 @@ IF ( NOT RPMDB_LIBRARY )
+ FIND_LIBRARY(RPMDB_LIBRARY NAMES rpm)
+ ENDIF( NOT RPMDB_LIBRARY )
+ 
+-FIND_LIBRARY(RPMIO_LIBRARY NAMES rpmio)
++FIND_LIBRARY(RPMIO_LIBRARY NAMES rpmio PATHS /opt/profbuild/lib)
+ IF ( RPMIO_LIBRARY )
+-SET( RPMDB_LIBRARY ${RPMIO_LIBRARY} ${RPMDB_LIBRARY} )
++SET(RPMDB_LIBRARY ${RPMDB_LIBRARY} ${RPMIO_LIBRARY} lzma popt dl pthread nss3 bz2 elf z)
+ ENDIF ( RPMIO_LIBRARY )
+ 
+ IF ( RPM5 )
+diff --git a/cmake/modules/FindCheck.cmake b/cmake/modules/FindCheck.cmake
+index 8ed3739..80c81e2 100644
+--- a/cmake/modules/FindCheck.cmake
++++ b/cmake/modules/FindCheck.cmake
+@@ -12,9 +12,9 @@ FIND_LIBRARY(CHECK_LIBRARY NAMES check)
+ IF(${CMAKE_MAJOR_VERSION}.${CMAKE_MINOR_VERSION} GREATER 2.4)
+   # handle the QUIETLY and REQUIRED arguments and set CHECK_FOUND to TRUE if
+   # all listed variables are TRUE
+-  INCLUDE(FindPackageHandleStandardArgs)
++  #jca INCLUDE(FindPackageHandleStandardArgs)
+ 
+-  FIND_PACKAGE_HANDLE_STANDARD_ARGS(Check "Please install 'check' and 'check-devel' packages" CHECK_LIBRARY CHECK_INCLUDE_DIR)
++  #jca FIND_PACKAGE_HANDLE_STANDARD_ARGS(Check "Please install 'check' and 'check-devel' packages" CHECK_LIBRARY CHECK_INCLUDE_DIR)
+ ENDIF(${CMAKE_MAJOR_VERSION}.${CMAKE_MINOR_VERSION} GREATER 2.4)
+ 
+ IF(CHECK_FOUND)

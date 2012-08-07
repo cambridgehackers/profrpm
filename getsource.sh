@@ -10,7 +10,14 @@ md5sum *
 # de64e7410721aa8e377adb8430cfc9e2  rpm-4.9.1.1.tar.bz2
 git clone git://github.com/openSUSE/libsolv.git
 (cd libsolv; git checkout BASE-SuSE-Code-12_1-Branch)
+#BASE-SuSE-Code-11_4-Branch
 git clone git://github.com/openSUSE/libzypp.git
 (cd libzypp; git checkout BASE-SuSE-Code-12_1-Branch)
 git clone git://github.com/openSUSE/zypper.git
 (cd zypper; git checkout BASE-SuSE-Code-12_1-Branch)
+
+
+#git clone https://github.com/openSUSE/sat-solver.git
+#7e565d33c8ddc94afd5b3b84f42e340cf20345c7
+#SuSE-Code-11_4-Branch
+#SuSE-Code-12_2-Branch

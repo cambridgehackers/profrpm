@@ -1,0 +1,26 @@
+diff --git a/src/CMakeLists.txt b/src/CMakeLists.txt
+index b0a263b..869d717 100644
+--- a/src/CMakeLists.txt
++++ b/src/CMakeLists.txt
+@@ -91,6 +91,8 @@ SET( zypper_utils_SRCS
+   ${zypper_utils_HEADERS}
+ )
+ 
++#SET( ZYPP_LIBRARY ${ZYPP_LIBRARY} /opt/profbuild/lib64/libsatsolver.a /opt/profbuild/lib64/libsatsolverext.a expat curl /opt/profbuild/lib/librpm.a /opt/profbuild/lib/librpmio.a nss3 dl crypto lzma popt pthread xml2 util bz2 z udev elf)
++SET( ZYPP_LIBRARY ${ZYPP_LIBRARY} satsolver satsolverext expat curl rpm rpmio nss3 dl crypto lzma popt pthread xml2 util bz2 z udev elf)
+ ADD_LIBRARY( zypper_lib ${zypper_SRCS} ${zypper_out_SRCS} ${zypper_utils_SRCS} )
+ TARGET_LINK_LIBRARIES( zypper_lib ${ZYPP_LIBRARY} ${READLINE_LIBRARY} -laugeas ${AUGEAS_LIBRARY} )
+ 
+diff --git a/zypper.conf b/zypper.conf
+index 0bcc1f7..a893ee8 100644
+--- a/zypper.conf
++++ b/zypper.conf
+@@ -65,7 +65,7 @@
+ ## Valid values: boolean
+ ## Default value: yes
+ ##
+-# installRecommends = yes
++installRecommends = no
+ 
+ ## Commands in which to force resolution.
+ ##
