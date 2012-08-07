@@ -160,7 +160,7 @@ diff '--exclude=.git' -aur ./zypper/src/CMakeLists.txt ../test.003/zypper/src/CM
    ${zypper_utils_HEADERS}
  )
  
-+SET( ZYPP_LIBRARY ${ZYPP_LIBRARY} /opt/profbuild/lib64/libsolv.a /opt/profbuild/lib64/libsolvext.a expat curl /opt/profbuild/lib/librpm.a /opt/profbuild/lib/librpmio.a nss3 dl crypto lzma popt pthread xml2 util bz2 z )
++SET( ZYPP_LIBRARY ${ZYPP_LIBRARY} /opt/profbuild/lib64/libsolv.a /opt/profbuild/lib64/libsolvext.a expat curl /opt/profbuild/lib/librpm.a /opt/profbuild/lib/librpmio.a nss3 dl crypto lzma popt pthread xml2 util bz2 z elf )
  ADD_LIBRARY( zypper_lib ${zypper_SRCS} ${zypper_out_SRCS} ${zypper_utils_SRCS} )
  TARGET_LINK_LIBRARIES( zypper_lib ${ZYPP_LIBRARY} ${READLINE_LIBRARY} -laugeas ${AUGEAS_LIBRARY} )
  
