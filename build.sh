@@ -9,7 +9,8 @@ sudo cp db.h /opt/profbuild/include/rpm/
 #needed by 11.4 verion of libzypp
 tar cf - lib/rpmdb_internal.h lib/backend/dbi.h lib/rpmhash.H | (cd /opt/profbuild/include/rpm/; sudo tar xf -)
 
-cd ../libsolv
+#cd ../libsolv
+cd ../sat-solver
 ../../zmake.sh
 
 cd ../libzypp
