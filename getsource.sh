@@ -1,7 +1,7 @@
 #
 set -e
 set -x
-GCC_VERSION=`gcc --version | head -1 | awk '{print $3}'`
+GCC_VERSION=`gcc --version | head -1 | sed -e "s/.* //"`
 [ -e test ] || mkdir test
 cd test
 wget http://rpm.org/releases/rpm-4.9.x/rpm-4.9.1.1.tar.bz2

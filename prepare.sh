@@ -2,7 +2,7 @@
 set -x
 set -e
 cd test
-GCC_VERSION=`gcc --version | head -1 | awk '{print $3}'`
+GCC_VERSION=`gcc --version | head -1 | sed -e "s/.* //"`
 tar xzf db-4.5.20.tar.gz
 tar xzf file-5.09.tar.gz
 tar xjf rpm-4.9.1.1.tar.bz2

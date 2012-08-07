@@ -1,6 +1,7 @@
 #
 set -e
 set -x
+GCC_VERSION=`gcc --version | head -1 | sed -e "s/.* //"`
 cd test/rpm-4.9.1.1
 ../../rpm_configure.sh
 make

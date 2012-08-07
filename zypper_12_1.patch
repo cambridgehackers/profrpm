@@ -86,7 +86,7 @@ diff '--exclude=.git' -aur ./libzypp/zypp/CMakeLists.txt ../test.003/libzypp/zyp
  SET(UTIL_LIBRARY util)
  TARGET_LINK_LIBRARIES(zypp ${UTIL_LIBRARY} )
 -TARGET_LINK_LIBRARIES(zypp ${RPM_LIBRARY} )
-+TARGET_LINK_LIBRARIES(zypp ${RPM_LIBRARY} ${RPMIO_LIBRARY} lzma popt pthread nss3 bz2 dl /opt/profbuild/lib64/libsolv.a /opt/profbuild/lib64/libsolvext.a )
++TARGET_LINK_LIBRARIES(zypp ${RPM_LIBRARY} ${RPMIO_LIBRARY} lzma popt pthread nss3 bz2 dl elf /opt/profbuild/lib64/libsolv.a /opt/profbuild/lib64/libsolvext.a )
  TARGET_LINK_LIBRARIES(zypp ${GETTEXT_LIBRARIES} )
  TARGET_LINK_LIBRARIES(zypp ${CURL_LIBRARY} )
  TARGET_LINK_LIBRARIES(zypp ${LIBXML_LIBRARY} )
