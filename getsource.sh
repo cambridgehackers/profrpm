@@ -12,7 +12,7 @@ md5sum *
 # 6fd7cd6c4281e68fe9ec6644ce0fac6f  file-5.09.tar.gz
 # de64e7410721aa8e377adb8430cfc9e2  rpm-4.9.1.1.tar.bz2
 
-if [ "$GCC_VERSION" > "4.6.0" ] ; then
+if [ "$GCC_VERSION" \> "4.6.0" ] ; then
     # c++ (GCC) 4.6.3 20120306 (Red Hat 4.6.3-2)
     VERSION=SuSE-Code-12_1-Branch
 else

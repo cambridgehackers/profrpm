@@ -7,7 +7,7 @@ tar xzf db-4.5.20.tar.gz
 tar xzf file-5.09.tar.gz
 tar xjf rpm-4.9.1.1.tar.bz2
 
-if [ "$GCC_VERSION" > "4.6.0" ] ; then
+if [ "$GCC_VERSION" \> "4.6.0" ] ; then
     patch -p1 <../zypper_12_1.patch 
 else
     (cd libzypp; patch -p1 <../../libzypp_11_4.patch)
