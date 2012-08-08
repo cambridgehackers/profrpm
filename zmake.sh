@@ -1,7 +1,7 @@
 #
 set -x
 set -e
-mkdir build
+[ -e build ] || mkdir build
 cd build
 TARGET_DIR=/opt/profbuild
 LDFLAGS="-L$TARGET_DIR/lib64 -L$TARGET_DIR/lib" \
