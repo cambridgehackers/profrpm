@@ -1,5 +1,5 @@
 diff --git a/zypp/Pathname.cc b/zypp/Pathname.cc
-index fb8037d..e4e9163 100644
+index fb8037d..dc01f90 100644
 --- a/zypp/Pathname.cc
 +++ b/zypp/Pathname.cc
 @@ -24,6 +24,20 @@ namespace zypp
@@ -23,9 +23,19 @@ index fb8037d..e4e9163 100644
      ///////////////////////////////////////////////////////////////////
      //
      //	METHOD NAME : Pathname::_assign
-@@ -74,8 +88,9 @@ namespace zypp
+@@ -59,6 +73,7 @@ namespace zypp
+       // [foo]   is always [./foo] due to init above
+       // [*/..]  + "/.."  ==> [*/../..]
+       // [*/foo] + "/.."  ==> [*]
++#if 0
+       auto goParent_f =  [&](){
+ 	if ( name_t.empty() )
+ 	  /*NOOP*/;
+@@ -73,9 +88,11 @@ namespace zypp
+ 	    name_t.erase( pos );
  	}
        };
++#endif
  
 -      for ( auto ch : name_tv )
 +      for ( unsigned i= 0; i < name_tv.size(); i++)
@@ -34,7 +44,7 @@ index fb8037d..e4e9163 100644
  	switch ( ch )
  	{
  	  case '/':
-@@ -84,7 +99,7 @@ namespace zypp
+@@ -84,7 +101,7 @@ namespace zypp
  	      case P_none:	pending = P_slash; break;
  	      case P_slash:	break;
  	      case P_dot1:	pending = P_slash; break;
@@ -43,7 +53,7 @@ index fb8037d..e4e9163 100644
  	    }
  	    break;
  
-@@ -116,7 +131,7 @@ namespace zypp
+@@ -116,7 +133,7 @@ namespace zypp
  	case P_none:	break;
  	case P_slash:	if ( name_t.empty() ) name_t = "/"; break;
  	case P_dot1:	if ( name_t.empty() ) name_t = "/"; break;
