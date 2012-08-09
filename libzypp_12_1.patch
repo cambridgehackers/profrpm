@@ -1,41 +1,8 @@
-diff '--exclude=.git' -aur ./libzypp/cmake/modules/FindRpm.cmake ../test.003/libzypp/cmake/modules/FindRpm.cmake
---- ./libzypp/cmake/modules/FindRpm.cmake	2012-08-05 07:45:28.116621739 -0400
-+++ ../test.003/libzypp/cmake/modules/FindRpm.cmake	2012-08-05 07:49:05.910616194 -0400
-@@ -5,11 +5,13 @@
- endif(RPM_INCLUDE_DIR AND RPM_LIBRARY)
- 
- set(RPM_LIBRARY)
-+set(RPMIO_LIBRARY)
- set(RPM_INCLUDE_DIR)
- 
- FIND_PATH(RPM_INCLUDE_DIR rpm/rpmdb.h
- 	/usr/include
- 	/usr/local/include
-+	/opt/profbuild/include
- )
- 
- set(RPM_SUSPECT_VERSION "RPM_SUSPECT_VERSION-NOTFOUND" )
-@@ -38,7 +40,9 @@
- 	PATHS
- 	/usr/lib
- 	/usr/local/lib
-+	/opt/profbuild/lib
- )
-+FIND_LIBRARY(RPMIO_LIBRARY NAMES rpmio PATHS /opt/profbuild/lib)
- 
- if(RPM_INCLUDE_DIR AND RPM_LIBRARY)
-    MESSAGE( STATUS "rpm found: includes in ${RPM_INCLUDE_DIR}, library in ${RPM_LIBRARY} (suspect ${RPM_SUSPECT_VERSION})")
-@@ -47,4 +51,4 @@
-    MESSAGE( STATUS "rpm not found")
- endif(RPM_INCLUDE_DIR AND RPM_LIBRARY)
- 
--MARK_AS_ADVANCED(RPM_INCLUDE_DIR RPM_LIBRARY)
-\ No newline at end of file
-+MARK_AS_ADVANCED(RPM_INCLUDE_DIR RPM_LIBRARY RPMIO_LIBRARY)
-diff '--exclude=.git' -aur ./libzypp/CMakeLists.txt ../test.003/libzypp/CMakeLists.txt
---- ./libzypp/CMakeLists.txt	2012-08-05 07:45:28.292621738 -0400
-+++ ../test.003/libzypp/CMakeLists.txt	2012-08-05 00:17:10.305987252 -0400
-@@ -122,13 +122,13 @@
+diff --git a/CMakeLists.txt b/CMakeLists.txt
+index 8e42ebd..235cd1f 100644
+--- a/CMakeLists.txt
++++ b/CMakeLists.txt
+@@ -122,13 +122,13 @@ ELSE ( NOT ZLIB_FOUND)
    INCLUDE_DIRECTORIES(${ZLIB_INCLUDE_DIR})
  ENDIF( NOT ZLIB_FOUND)
  
@@ -55,10 +22,46 @@ diff '--exclude=.git' -aur ./libzypp/CMakeLists.txt ../test.003/libzypp/CMakeLis
  
  # libsolv uses expat and has open references to it:
  FIND_PACKAGE(EXPAT REQUIRED)
-diff '--exclude=.git' -aur ./libzypp/zypp/CMakeLists.txt ../test.003/libzypp/zypp/CMakeLists.txt
---- ./libzypp/zypp/CMakeLists.txt	2012-08-05 07:45:28.301621738 -0400
-+++ ../test.003/libzypp/zypp/CMakeLists.txt	2012-08-05 00:17:10.306987252 -0400
-@@ -915,14 +915,14 @@
+diff --git a/cmake/modules/FindRpm.cmake b/cmake/modules/FindRpm.cmake
+index 29696e3..75085c2 100644
+--- a/cmake/modules/FindRpm.cmake
++++ b/cmake/modules/FindRpm.cmake
+@@ -5,11 +5,13 @@ if(RPM_INCLUDE_DIR AND RPM_LIBRARY)
+ endif(RPM_INCLUDE_DIR AND RPM_LIBRARY)
+ 
+ set(RPM_LIBRARY)
++set(RPMIO_LIBRARY)
+ set(RPM_INCLUDE_DIR)
+ 
+ FIND_PATH(RPM_INCLUDE_DIR rpm/rpmdb.h
+ 	/usr/include
+ 	/usr/local/include
++	/opt/profbuild/include
+ )
+ 
+ set(RPM_SUSPECT_VERSION "RPM_SUSPECT_VERSION-NOTFOUND" )
+@@ -38,7 +40,9 @@ FIND_LIBRARY(RPM_LIBRARY NAMES rpm
+ 	PATHS
+ 	/usr/lib
+ 	/usr/local/lib
++	/opt/profbuild/lib
+ )
++FIND_LIBRARY(RPMIO_LIBRARY NAMES rpmio PATHS /opt/profbuild/lib)
+ 
+ if(RPM_INCLUDE_DIR AND RPM_LIBRARY)
+    MESSAGE( STATUS "rpm found: includes in ${RPM_INCLUDE_DIR}, library in ${RPM_LIBRARY} (suspect ${RPM_SUSPECT_VERSION})")
+@@ -47,4 +51,4 @@ else(RPM_INCLUDE_DIR AND RPM_LIBRARY)
+    MESSAGE( STATUS "rpm not found")
+ endif(RPM_INCLUDE_DIR AND RPM_LIBRARY)
+ 
+-MARK_AS_ADVANCED(RPM_INCLUDE_DIR RPM_LIBRARY)
+\ No newline at end of file
++MARK_AS_ADVANCED(RPM_INCLUDE_DIR RPM_LIBRARY RPMIO_LIBRARY)
+diff --git a/zypp/CMakeLists.txt b/zypp/CMakeLists.txt
+index db4d53f..0a71c27 100644
+--- a/zypp/CMakeLists.txt
++++ b/zypp/CMakeLists.txt
+@@ -915,14 +915,14 @@ SET_LOGGROUP( "libsolv" ${zypp_sat_SRCS} )
  #SET_LOGGROUP( "group" ${zypp_pool_SRCS} )
  
  
@@ -75,7 +78,7 @@ diff '--exclude=.git' -aur ./libzypp/zypp/CMakeLists.txt ../test.003/libzypp/zyp
  TARGET_LINK_LIBRARIES(zypp ${GETTEXT_LIBRARIES} )
  TARGET_LINK_LIBRARIES(zypp ${CURL_LIBRARY} )
  TARGET_LINK_LIBRARIES(zypp ${LIBXML_LIBRARY} )
-@@ -942,7 +942,8 @@
+@@ -942,7 +942,8 @@ ENDIF ( UDEV_FOUND )
  
  TARGET_LINK_LIBRARIES(zypp ${LIBPROXY_LIBRARIES} )
  
@@ -85,10 +88,11 @@ diff '--exclude=.git' -aur ./libzypp/zypp/CMakeLists.txt ../test.003/libzypp/zyp
  
  # install XML schemas
  FILE( GLOB YUM_SCHEMA_FILES ${LIBZYPP_SOURCE_DIR}/zypp/parser/yum/schema/*.rng )
-diff '--exclude=.git' -aur ./libzypp/zypp/target/rpm/RpmDb.cc ../test.003/libzypp/zypp/target/rpm/RpmDb.cc
---- ./libzypp/zypp/target/rpm/RpmDb.cc	2012-08-05 07:45:28.318621738 -0400
-+++ ../test.003/libzypp/zypp/target/rpm/RpmDb.cc	2012-08-05 00:17:10.307987252 -0400
-@@ -1444,7 +1444,9 @@
+diff --git a/zypp/target/rpm/RpmDb.cc b/zypp/target/rpm/RpmDb.cc
+index a76ddac..82eacb9 100644
+--- a/zypp/target/rpm/RpmDb.cc
++++ b/zypp/target/rpm/RpmDb.cc
+@@ -1444,7 +1444,9 @@ RpmDb::run_rpm (const RpmArgVec& opts,
    RpmArgVec args;
  
    // always set root and dbpath

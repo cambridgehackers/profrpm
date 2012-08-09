@@ -1,0 +1,207 @@
+diff --git a/zypp/Pathname.cc b/zypp/Pathname.cc
+index fb8037d..e4e9163 100644
+--- a/zypp/Pathname.cc
++++ b/zypp/Pathname.cc
+@@ -24,6 +24,20 @@ namespace zypp
+   namespace filesystem
+   { /////////////////////////////////////////////////////////////////
+ 
++      void newgoParent_f(std::string &aname_t){
++	if ( aname_t.empty() )
++	  /*NOOP*/;
++	else if ( aname_t.size() == 1 ) // content is '.'
++	  aname_t += "/..";
++	else
++	{
++	  std::string::size_type pos = aname_t.rfind( "/" );
++	  if ( pos == aname_t.size() - 3 && aname_t[pos+1] == '.' && aname_t[pos+2] == '.' )
++	    aname_t += "/..";
++	  else
++	    aname_t.erase( pos );
++	}
++      };
+     ///////////////////////////////////////////////////////////////////
+     //
+     //	METHOD NAME : Pathname::_assign
+@@ -74,8 +88,9 @@ namespace zypp
+ 	}
+       };
+ 
+-      for ( auto ch : name_tv )
++      for ( unsigned i= 0; i < name_tv.size(); i++)
+       {
++      auto ch = name_tv[i];
+ 	switch ( ch )
+ 	{
+ 	  case '/':
+@@ -84,7 +99,7 @@ namespace zypp
+ 	      case P_none:	pending = P_slash; break;
+ 	      case P_slash:	break;
+ 	      case P_dot1:	pending = P_slash; break;
+-	      case P_dot2:	goParent_f(); pending = P_slash; break;
++	      case P_dot2:	newgoParent_f(name_t); pending = P_slash; break;
+ 	    }
+ 	    break;
+ 
+@@ -116,7 +131,7 @@ namespace zypp
+ 	case P_none:	break;
+ 	case P_slash:	if ( name_t.empty() ) name_t = "/"; break;
+ 	case P_dot1:	if ( name_t.empty() ) name_t = "/"; break;
+-	case P_dot2:	goParent_f(); if ( name_t.empty() ) name_t = "/"; break;
++	case P_dot2:	newgoParent_f(name_t); if ( name_t.empty() ) name_t = "/"; break;
+       }
+       return;
+     }
+diff --git a/zypp/RepoInfo.cc b/zypp/RepoInfo.cc
+index 91d72c2..0948f5d 100644
+--- a/zypp/RepoInfo.cc
++++ b/zypp/RepoInfo.cc
+@@ -376,6 +376,7 @@ namespace zypp
+     }
+ 
+     // print if non empty value
++#if 0
+     auto strif( [&] ( const std::string & tag_r, const std::string & value_r ) {
+       if ( ! value_r.empty() )
+ 	str << tag_r << value_r << std::endl;
+@@ -395,6 +396,7 @@ namespace zypp
+     strif( "- targetdistro: ", targetDistribution() );
+     strif( "- metadataPath: ", metadataPath().asString() );
+     strif( "- packagesPath: ", packagesPath().asString() );
++#endif
+ 
+     return str;
+   }
+diff --git a/zypp/ZConfig.cc b/zypp/ZConfig.cc
+index 2435931..6ae2c77 100644
+--- a/zypp/ZConfig.cc
++++ b/zypp/ZConfig.cc
+@@ -250,6 +250,7 @@ namespace zypp
+    * (including the default setting and provide some method to
+    * write this into a sample zypp.conf.
+   */
++  Locale foo(const std::string & str_r) { return Locale(str_r); }
+   class ZConfig::Impl
+   {
+     public:
+@@ -361,7 +362,8 @@ namespace zypp
+ 		  str::split( value, back_inserter( tmp ), ", \t" );
+ 
+ 		  boost::function<Locale(const std::string &)> transform(
+-		    [](const std::string & str_r)->Locale{ return Locale(str_r); }
++		    //[](const std::string & str_r)->Locale{ return Locale(str_r); }
++		    foo
+ 		  );
+ 		  repoRefreshLocales.insert( make_transform_iterator( tmp.begin(), transform ),
+ 					     make_transform_iterator( tmp.end(), transform ) );
+diff --git a/zypp/media/MediaCD.cc b/zypp/media/MediaCD.cc
+index 7986421..91ef09c 100644
+--- a/zypp/media/MediaCD.cc
++++ b/zypp/media/MediaCD.cc
+@@ -218,8 +218,9 @@ namespace zypp
+     {
+       std::vector<std::string> words;
+       str::split( devices, std::back_inserter(words), "," );
+-      for ( const std::string & device : words )
++      for ( std::vector<std::string>::const_iterator it = words.begin(); it != words.end(); ++it )
+       {
++      const std::string & device = *it;
+ 	if ( device.empty() )
+ 	  continue;
+ 
+@@ -371,8 +372,9 @@ namespace zypp
+ 	}
+ 	else
+ 	{
+-	  for( const auto & d : detected )
+-	  {
++          for ( auto it = detected.begin(); it != detected.end(); ++it )
++          {
++          const auto & d = *it;
+ 	    // /dev/cdrom or /dev/dvd to the front
+ 	    if ( media.equals( d ) )
+ 	      _devices.push_front( d );
+@@ -454,8 +456,9 @@ namespace zypp
+ 	if ( detected.empty() )
+ 	  valid = true;	// better try this than nothing
+ 	else
+-	  for ( const auto & d : detected )
+-	  {
++          for ( auto it = detected.begin(); it != detected.end(); ++it )
++          {
++          const auto & d = *it;
+ 	    if ( temp.equals( d ) )
+ 	    {
+ 	      valid = true;
+@@ -818,8 +821,11 @@ namespace zypp
+       // This also fills the _devices list on demand
+       detectDevices( _url.getScheme() == "dvd" ? true : false );
+ 
+-    for ( const auto & it : _devices )
++    for ( auto iit = _devices.begin(); iit != _devices.end(); ++iit )
++    {
++    const auto & it = *iit;
+       devices.push_back( it.name );
++    }
+ 
+     index = ( _lastdev >= 0  ? (unsigned)_lastdev : 0 );
+ 
+diff --git a/zypp/repo/RepoVariables.cc b/zypp/repo/RepoVariables.cc
+index 9fe4eef..56fa67d 100644
+--- a/zypp/repo/RepoVariables.cc
++++ b/zypp/repo/RepoVariables.cc
+@@ -63,6 +63,18 @@ namespace zypp
+ 	mutable std::string _releasever;
+       };
+ 
++      static std::string method1() {
++	static ReplacerData _data;
++          return _data.sysarch();
++      }
++      static std::string method2() {
++	static ReplacerData _data;
++          return _data.basearch();
++      }
++      static std::string method3() {
++	static ReplacerData _data;
++          return _data.releasever();
++      }
+       /** \brief Replace repo variables on demand
+        *
+        * Initialisation of repo variables is delayed until they actually occur in
+@@ -73,9 +85,12 @@ namespace zypp
+ 	static ReplacerData _data;
+ 
+ 	std::string ret( value_r );
+-	ret = str::replaceAllFun( ret, "$arch",		[&_data]()-> std::string { return _data.sysarch(); } );
+-	ret = str::replaceAllFun( ret, "$basearch",	[&_data]()-> std::string { return _data.basearch(); } );
+-	ret = str::replaceAllFun( ret, "$releasever",	[&_data]()-> std::string { return _data.releasever(); } );
++	//ret = str::replaceAllFun( ret, "$arch",		[&_data]()-> std::string { return _data.sysarch(); } );
++	//ret = str::replaceAllFun( ret, "$basearch",	[&_data]()-> std::string { return _data.basearch(); } );
++	//ret = str::replaceAllFun( ret, "$releasever",	[&_data]()-> std::string { return _data.releasever(); } );
++	ret = str::replaceAllFun( ret, "$arch",		method1 );
++	ret = str::replaceAllFun( ret, "$basearch",	method2 );
++	ret = str::replaceAllFun( ret, "$releasever",	method3 );
+ 	return ret;
+       }
+ 
+diff --git a/zypp/repo/susetags/Downloader.cc b/zypp/repo/susetags/Downloader.cc
+index 9652a3e..fa62f3e 100644
+--- a/zypp/repo/susetags/Downloader.cc
++++ b/zypp/repo/susetags/Downloader.cc
+@@ -197,6 +197,7 @@ void Downloader::download( MediaSetAccess &media,
+   }
+ 
+   // check whether to download more package translations:
++#if 0
+   {
+     auto fnc_checkTransaltions( [&]( const Locale & locale_r ) {
+       for ( Locale toGet( locale_r ); toGet != Locale::noCode; toGet = toGet.fallback() )
+@@ -219,6 +220,7 @@ void Downloader::download( MediaSetAccess &media,
+     }
+     fnc_checkTransaltions( ZConfig::instance().textLocale() );
+   }
++#endif
+ 
+   for_( it, _repoindex->mediaFileChecksums.begin(), _repoindex->mediaFileChecksums.end() )
+   {

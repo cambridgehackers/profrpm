@@ -1,0 +1,56 @@
+diff --git a/src/Config.cc b/src/Config.cc
+index 35b51ee..1d2a704 100644
+--- a/src/Config.cc
++++ b/src/Config.cc
+@@ -95,13 +95,14 @@ ConfigOption::ConfigOption(const std::string & strval_r)
+ 
+ ConfigOption::Option ConfigOption::parse(const std::string & strval_r)
+ {
+-  static std::unordered_map<std::string,ConfigOption::Option> _index = [](){
+     // index into optionPairs
+     std::unordered_map<std::string,ConfigOption::Option> data;
+-    for ( const auto & p : optionPairs() )
++    const std::vector<OptionPair> &foo = optionPairs();
++    for ( auto it = foo.begin(); it != foo.end(); ++it ) {
++      const auto & p = *it;
+       data[p.first] = p.second;
+-    return data;
+-  }();
++    }
++  static std::unordered_map<std::string,ConfigOption::Option> _index = data;
+ 
+   auto it( _index.find( strval_r ) );
+   if ( it == _index.end() )
+@@ -114,13 +115,14 @@ ConfigOption::Option ConfigOption::parse(const std::string & strval_r)
+ 
+ string ConfigOption::asString() const
+ {
+-  static std::unordered_map<ConfigOption::Option,std::string> _index = [](){
+     // index into optionPairs
+     std::unordered_map<ConfigOption::Option,std::string> data;
+-    for ( const auto & p : optionPairs() )
++    const std::vector<OptionPair> foo = optionPairs();
++    for ( auto it = foo.begin(); it != foo.end(); ++it ) {
++      const auto & p = *it;
+       data[p.second] = p.first;
+-    return data;
+-  }();
++    }
++  static std::unordered_map<ConfigOption::Option,std::string> _index = data;
+ 
+   auto it( _index.find( _value ) );
+   if ( it != _index.end() )
+diff --git a/src/Summary.cc b/src/Summary.cc
+index d790c3f..6027356 100644
+--- a/src/Summary.cc
++++ b/src/Summary.cc
+@@ -229,7 +229,8 @@ void Summary::readPool(const zypp::ResPool & pool)
+ 
+       if (!upgrade_downgrade)
+       {
+-        _toinstall[res->kind()].insert(ResPair(NULL, res));
++        ResObject::constPtr foo = NULL;
++        _toinstall[res->kind()].insert(ResPair(foo, res));
+         _inst_size_change += res->installSize();
+       }
+ 

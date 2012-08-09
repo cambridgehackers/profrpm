@@ -1,7 +1,8 @@
-diff '--exclude=.git' -aur ./zypper/CMakeLists.txt ../test.003/zypper/CMakeLists.txt
---- ./zypper/CMakeLists.txt	2012-08-05 07:45:48.498621463 -0400
-+++ ../test.003/zypper/CMakeLists.txt	2012-08-05 00:17:10.307987252 -0400
-@@ -6,6 +6,7 @@
+diff --git a/CMakeLists.txt b/CMakeLists.txt
+index d334fe8..07f9b14 100644
+--- a/CMakeLists.txt
++++ b/CMakeLists.txt
+@@ -6,6 +6,7 @@ SET( PACKAGE "zypper" )
  SET( CMAKE_MODULE_PATH
    ${ZYPP_PREFIX}/share/cmake/Modules
    ${ZYPPER_SOURCE_DIR}/cmake/modules
@@ -9,7 +10,7 @@ diff '--exclude=.git' -aur ./zypper/CMakeLists.txt ../test.003/zypper/CMakeLists
    ${CMAKE_MODULE_PATH}
  )
  INCLUDE(ZyppCommon)
-@@ -16,8 +17,8 @@
+@@ -16,8 +17,8 @@ SET( VERSION "${VERSION_MAJOR}.${VERSION_MINOR}.${VERSION_PATCH}" )
  ADD_DEFINITIONS( -D_FILE_OFFSET_BITS=64 )
  ADD_DEFINITIONS( -DVERSION="${VERSION}" )
  
@@ -20,7 +21,7 @@ diff '--exclude=.git' -aur ./zypper/CMakeLists.txt ../test.003/zypper/CMakeLists
  
  GENERATE_PACKAGING(${PACKAGE} ${VERSION})
  
-@@ -53,7 +54,7 @@
+@@ -53,7 +54,7 @@ MACRO(ADD_TESTS)
    FOREACH( loop_var ${ARGV} )
      SET_SOURCE_FILES_PROPERTIES( ${loop_var}_test.cc COMPILE_FLAGS "-DBOOST_TEST_DYN_LINK -DBOOST_TEST_MAIN -DBOOST_AUTO_TEST_MAIN=\"\" " )
      ADD_EXECUTABLE( ${loop_var}_test ${loop_var}_test.cc )
@@ -29,7 +30,7 @@ diff '--exclude=.git' -aur ./zypper/CMakeLists.txt ../test.003/zypper/CMakeLists
      ADD_TEST( ${loop_var}_test ${CMAKE_CURRENT_BINARY_DIR}/${loop_var}_test --catch_system_errors=no)
    ENDFOREACH( loop_var )
  ENDMACRO(ADD_TESTS)
-@@ -62,6 +63,7 @@
+@@ -62,6 +63,7 @@ ADD_SUBDIRECTORY( src )
  ADD_SUBDIRECTORY( po )
  ADD_SUBDIRECTORY( doc )
  ADD_SUBDIRECTORY( tests EXCLUDE_FROM_ALL )
@@ -37,20 +38,22 @@ diff '--exclude=.git' -aur ./zypper/CMakeLists.txt ../test.003/zypper/CMakeLists
  
  INCLUDE(CTest)
  ENABLE_TESTING()
-diff '--exclude=.git' -aur ./zypper/src/CMakeLists.txt ../test.003/zypper/src/CMakeLists.txt
---- ./zypper/src/CMakeLists.txt	2012-08-05 07:45:48.503621461 -0400
-+++ ../test.003/zypper/src/CMakeLists.txt	2012-08-05 00:17:10.308987252 -0400
-@@ -91,6 +91,7 @@
+diff --git a/src/CMakeLists.txt b/src/CMakeLists.txt
+index 81b774d..210506c 100644
+--- a/src/CMakeLists.txt
++++ b/src/CMakeLists.txt
+@@ -91,6 +91,7 @@ SET( zypper_utils_SRCS
    ${zypper_utils_HEADERS}
  )
  
-+SET( ZYPP_LIBRARY ${ZYPP_LIBRARY} /opt/profbuild/lib64/libsolv.a /opt/profbuild/lib64/libsolvext.a expat curl /opt/profbuild/lib/librpm.a /opt/profbuild/lib/librpmio.a nss3 dl crypto lzma popt pthread xml2 util bz2 z elf )
++SET( ZYPP_LIBRARY ${ZYPP_LIBRARY} /opt/profbuild/lib64/libsolv.a /opt/profbuild/lib64/libsolvext.a expat curl /opt/profbuild/lib/librpm.a /opt/profbuild/lib/librpmio.a nss3 dl crypto lzma popt pthread xml2 util bz2 z elf udev proxy )
  ADD_LIBRARY( zypper_lib ${zypper_SRCS} ${zypper_out_SRCS} ${zypper_utils_SRCS} )
  TARGET_LINK_LIBRARIES( zypper_lib ${ZYPP_LIBRARY} ${READLINE_LIBRARY} -laugeas ${AUGEAS_LIBRARY} )
  
-diff '--exclude=.git' -aur ./zypper/zypper.conf ../test.003/zypper/zypper.conf
---- ./zypper/zypper.conf	2012-08-05 07:45:48.455621464 -0400
-+++ ../test.003/zypper/zypper.conf	2012-08-05 00:17:10.308987252 -0400
+diff --git a/zypper.conf b/zypper.conf
+index 0bcc1f7..a893ee8 100644
+--- a/zypper.conf
++++ b/zypper.conf
 @@ -65,7 +65,7 @@
  ## Valid values: boolean
  ## Default value: yes
